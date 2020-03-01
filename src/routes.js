@@ -1,7 +1,9 @@
 import { Router } from 'express';
 
+import SessionCotroller from './app/controller/SessionController';
+
 const routes = new Router();
 
-routes.get('/', (req, res) => res.json({ message: 'hello world' }));
+routes.post('/sessions', SessionCotroller.store);
 
 export default routes;
