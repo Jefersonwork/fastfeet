@@ -4,6 +4,9 @@ import Recipients from '../models/Recipients';
 import Deliveryman from '../models/Deliveryman';
 import Deliveries from '../models/Deliveries';
 
+import RecordMail from '../jobs/RecordMail';
+import Queue from '../../lib/Queue';
+
 class DeliveriesController {
   async index(req, res) {
     const { page = 1 } = req.query;
@@ -78,6 +81,15 @@ class DeliveriesController {
     }
 
     const { id, product } = await Deliveries.create(req.body);
+
+    const deliveryman = await Deliveryman.findByPk(req.body.recipient_id, {
+      attributes: ['name', 'email'],
+    });
+
+    await Queue.add(RecordMail.key, {
+      product,
+      deliveryman,
+    });
 
     return res.json({ id, recipient_id, deliveryman_id, product });
   }
