@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import File from '../models/File';
 import Recipients from '../models/Recipients';
 import Deliveryman from '../models/Deliveryman';
@@ -11,7 +12,9 @@ class DeliveryConcludedController {
       where: {
         deliveryman_id: req.params.deliverymanId,
         canceled_at: null,
-        end_date: Date(),
+        end_date: {
+          [Op.not]: null,
+        },
       },
       attributes: ['id', 'product', 'start_date', 'end_date'],
       limt: 20,
